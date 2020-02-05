@@ -16,11 +16,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    color.cpp \
+    grain.cpp \
+    grainsettings.cpp \
+    graphicsscene.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    table.cpp
 
 HEADERS += \
-    mainwindow.h
+    color.h \
+    grain.h \
+    grainsettings.h \
+    graphicsscene.h \
+    mainwindow.h \
+    table.h
 
 FORMS += \
     mainwindow.ui

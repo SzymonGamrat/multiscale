@@ -2,16 +2,22 @@
 #define GRAPHICSSCENE_H
 
 #include <QGraphicsScene>
-#include <QPoint>
-#include <QMouseEvent>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsScene>
+#include <QGraphicsRectItem>
+#include <QColor>
+#include <QGraphicsView>
+#include <table.h>
+
 class GraphicsScene : public QGraphicsScene
 {
-    Q_OBJECT
 public:
-    explicit GraphicsScene();
+    Table* table;
+
+    void setTable(Table *_table);
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
 };
 
 #endif // GRAPHICSSCENE_H
