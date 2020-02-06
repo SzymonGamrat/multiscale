@@ -20,7 +20,10 @@ public:
     int id;
     std::vector<Color*> colors;
 
-    int color;
+    int color =0;
+
+    int new_color=0;
+
     GrainSettings* settings;
     QGraphicsScene* scene;
     QGraphicsRectItem* rect;
@@ -32,6 +35,7 @@ public:
     void setColors();
 
     void setColor(int color_id);
+    void updateColor();
 
     int randColor();
     Qt::GlobalColor getColor(int colorId);

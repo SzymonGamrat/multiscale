@@ -23,7 +23,7 @@ int Grain::getAxleX(int id, int _table_x, int block_size) {
 
 int Grain::getAxleY(int id, int _table_y, int block_size) {
     int return_ay = 0;
-    return_ay = ((id / _table_y) - 1) * block_size;
+    return_ay = ((id / _table_y)) * block_size;
     return return_ay;
 
 }
@@ -77,6 +77,12 @@ Qt::GlobalColor Grain::getColor(int colorId)
 
 void Grain::setColor(int color_id){
     this->color = color_id;
+    rect->setBrush(this->getColor(this->color));
+    //this->scene->update();
+}
+
+void Grain::updateColor(){
+    this->color = this->new_color;
     rect->setBrush(this->getColor(this->color));
     //this->scene->update();
 }

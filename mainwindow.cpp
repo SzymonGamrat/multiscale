@@ -32,7 +32,7 @@ void MainWindow::on_pushButton_clicked() //set scene
 
         table = new Table(ui->spinBox->value(),ui->spinBox_2->value(),scene);
 
-        this->table->randomColor(this->scene);
+        //this->table->randomColor(this->scene);
 
         //table->exportToFile();
 
@@ -47,6 +47,7 @@ void MainWindow::on_graphicsView_rubberBandChanged(const QRect &viewportRect, co
 {
 
 }
+
 
 
 

@@ -12,6 +12,7 @@
 #include <QColor>
 #include <QGraphicsView>
 #include <sstream>
+#include <map>
 
 int Table::getIdByAxles(int ax, int ay, int block_size){
 
@@ -62,40 +63,60 @@ void Table::randomColor(QGraphicsScene* scene) {
 
 void Table::vonNeumann(){
 
-   for (int i=1; i < this->size_x-1; i++){
-           for (int j=1; j < this->size_y-1; j++){
+ for (int i = 0; i < 100; i++){
 
-
-               int id = 0;
-               int count = 0;
+   for (int i=1; i < this->size_y-1; i++){
+           for (int j=1; j < this->size_x-1; j++){
+               std::map<int, int> color_count;
 
                //x,y
-               int current_id = j + i/this->size_x;
-
-               //x, y-1
-               id = j-1 + i/this->size_x;
-               if (grains[id]->color) count = grains[id]->color;
-
-               /*
-               //x+1, y
-               id = j + (i+1)/this->size_x;
-               if (grains[id]->color) count = grains[id]->color;
-
-               //x, y+1
-               id = j+1 + i/this->size_x;
-               if (grains[id]->color) count = grains[id]->color;
+               int current_id = j + i*this->size_x;
 
                //x-1, y
-               id = j + (i-1)/this->size_x;
-               if (grains[id]->color) count = grains[id]->color;
-               */
+               int id = j-1 + i*this->size_x;
 
-               if (count) grains[current_id]->setColor(count);
+               if (grains[id]->color){
+                   color_count[grains[id]->color]++;
+
+                 }
+
+               //x+1, y
+               id = j+1 + i*this->size_x;
+               if (grains[id]->color)
+                   color_count[grains[id]->color]++;
+
+               //x, y+1
+               id = j + (i+1)*this->size_x;
+               if (grains[id]->color)
+                   color_count[grains[id]->color]++;
+
+               //x, y-1
+               id = j + (i-1)*this->size_x;
+               if (grains[id]->color)
+                   color_count[grains[id]->color]++;
 
 
+               int max_value = 0;
+               int max_key = 0;
+               for(std::map<int,int>::iterator it=color_count.begin(); it !=color_count.end(); ++it){
+                   if(it->second > max_value){
+                       max_value = it->second;
+                       max_key = it->first;
+
+                   }
+               }
+
+               if(color_count.size()){
+                 grains[current_id]->new_color = max_key;
+               }
 
            }
        }
+
+       for (int i = 0; i < size_x*size_y; i++){
+           grains[i]->updateColor();
+       }
+   }
 }
 
 Table::Table(int size_x, int size_y, QGraphicsScene* scene)
