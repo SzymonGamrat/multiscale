@@ -30,6 +30,9 @@ public:
     int getAxleY(int id, int _table_y, int block_size);
     void draw(QGraphicsScene* scene);
     void setColors();
+
+    void setColor(int color_id);
+
     int randColor();
     Qt::GlobalColor getColor(int colorId);
 

@@ -34,7 +34,7 @@ void Grain::draw(QGraphicsScene* scene) {
     this->rect = new QGraphicsRectItem();
     rect->setRect(this->settings->ax, this->settings->ay, this->settings->h, this->settings->w);
 
-    rect->setBrush(Qt::black);
+    rect->setBrush(this->getColor(this->color));
     scene->addItem(rect);
 }
 
@@ -74,6 +74,13 @@ Qt::GlobalColor Grain::getColor(int colorId)
 
 
 }
+
+void Grain::setColor(int color_id){
+    this->color = color_id;
+    rect->setBrush(this->getColor(this->color));
+    //this->scene->update();
+}
+
 
 Grain::Grain(int _id, int _color, int _table_x, int _table_y, QGraphicsScene* scene)
 {

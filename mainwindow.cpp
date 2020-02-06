@@ -27,7 +27,7 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_pushButton_clicked() //set scene
 {
 
         table = new Table(ui->spinBox->value(),ui->spinBox_2->value(),scene);
@@ -50,7 +50,29 @@ void MainWindow::on_graphicsView_rubberBandChanged(const QRect &viewportRect, co
 
 
 
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::on_pushButton_2_clicked() //export
 {
     this->table->exportToFile();
+}
+
+void MainWindow::on_pushButton_3_clicked() //import
+{
+
+    table = new Table(scene);
+    ui->graphicsView->setScene(this->scene);
+}
+
+void MainWindow::on_checkBox_stateChanged(int arg1)
+{
+    if (ui->checkBox->checkState() == 2){
+        this->table->inclusion_active = 1;
+    } else {
+        this->table->inclusion_active = 0;
+
+    }
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    this->table->vonNeumann();
 }

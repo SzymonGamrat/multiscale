@@ -13,7 +13,6 @@ class GraphicsScene : public QGraphicsScene
 {
 public:
     Table* table;
-
     void setTable(Table *_table);
 
 protected:

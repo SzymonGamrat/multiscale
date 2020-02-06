@@ -2,11 +2,13 @@
 #define COLOR_H
 #include "ui_mainwindow.h"
 
+//#include "mainwindow.h"
+
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
 #include <QColor>
 #include <QGraphicsView>
-#include<vector>
+#include <vector>
 #include <fstream>
 #include <QGraphicsSceneMouseEvent>
 
