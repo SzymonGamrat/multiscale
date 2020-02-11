@@ -56,7 +56,13 @@ void Grain::setColors(){
 int Grain::randColor(){
 
         int randomColor = rand() % this->colors.size();
-        return randomColor;
+        if (randomColor == 9){
+            randColor();
+        } else {
+            return randomColor;
+        }
+
+
 
 }
 Qt::GlobalColor Grain::getColor(int colorId)
@@ -85,7 +91,7 @@ void Grain::setColor(int color_id){
 void Grain::updateColor(){
     this->color = this->new_color;
     rect->setBrush(this->getColor(this->color));
-    //this->scene->update();
+    this->scene->update();
 }
 
 
@@ -96,6 +102,7 @@ Grain::Grain(int _id, int _color, int _table_x, int _table_y, QGraphicsScene* sc
     this->color = _color;
     int block_size = 5;
     this->settings = new GrainSettings(this->getAxleX(this->id, _table_x, block_size),this->getAxleY(this->id, _table_y, block_size), block_size, block_size);
+    this->scene = scene;
     this->draw(scene);
 }
 

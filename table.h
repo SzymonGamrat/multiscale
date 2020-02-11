@@ -4,8 +4,6 @@
 #include <vector>
 #include <grain.h>
 #include <QGraphicsScene>
-
-#include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
@@ -17,10 +15,14 @@ class Table
 public:
 
     int size_x, size_y;
+    QGraphicsScene* scene;
     std::vector<Grain*> grains;
-
+    int grainsAmount = 0;
     int inclusion_active = 0;
     int inclusion_size = 0;
+    int inclusionType = 0;
+    int inclusionAmount = 0;
+    int inclusionAdditionState = 0;
     /*int rx =0;
     int ry =0;
     int new_rx = 0;
@@ -36,9 +38,12 @@ public:
     bool isInCircle(int rx, int ry, int new_rx, int new_ry,int inclusion_size);
     void setColorById(int id, QGraphicsItem *item);
     void setInclusionColor(int id, QGraphicsItem *item);
-
-
-    void vonNeumann();
+    void addInlusion(QPointF position);
+    void addRandomInclusions();
+    void addInlusion(int grainId);
+    void addRandomGrains();
+    void addGrain(int grainId);
+    void vonNeumann(Ui::MainWindow *ui);
 
 
 

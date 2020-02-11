@@ -28,21 +28,40 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_clicked();
+    void on_SetScene_clicked();
 
     void on_graphicsView_rubberBandChanged(const QRect &viewportRect, const QPointF &fromScenePoint, const QPointF &toScenePoint);
 
     void on_spinBox_valueChanged(const QString &arg1);
 
-    void on_pushButton_2_clicked();
+    void on_export_2_clicked();
 
-    void on_pushButton_3_clicked();
+    void on_import_2_clicked();
 
-    void on_checkBox_stateChanged(int arg1);
+    void on_Inclusion_stateChanged(int arg1);
 
     void on_pushButton_4_clicked();
 
-    void on_spinBox_3_valueChanged(int arg1);
+    void on_InclusionSize_valueChanged(int arg1);
+
+
+
+
+    void on_Circular_button_toggled(bool checked);
+
+    void on_Square_button_toggled(bool checked);
+
+    void on_spinBox_valueChanged(int arg1);
+
+    void on_pushButton_clicked();
+
+    void on_spinBox_2_valueChanged(int arg1);
+
+    void on_pushButton_2_clicked();
+
+    void on_radioButton_3_toggled(bool checked);
+
+    void on_radioButton_4_toggled(bool checked);
 
 private:
     Ui::MainWindow *ui;

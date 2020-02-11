@@ -11,12 +11,15 @@
 
 class GraphicsScene : public QGraphicsScene
 {
+
 public:
     Table* table;
     void setTable(Table *_table);
+    void getUpdate();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
 };
 
 #endif // GRAPHICSSCENE_H

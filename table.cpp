@@ -109,7 +109,7 @@ bool Table::isInCircle(int rx, int ry, int new_rx, int new_ry,int inclusion_size
 
 };
 
-void Table::vonNeumann(){
+void Table::vonNeumann(Ui::MainWindow *ui){
 
  for (int i = 0; i < 100; i++){
 
@@ -170,10 +170,123 @@ void Table::vonNeumann(){
    }
 }
 
+
+void Table::addInlusion(QPointF position){
+    int block_size = this->grains[0]->settings->h;
+
+    int size = this->inclusion_size;
+
+
+    int ry = (int)position.ry();
+        if (!ry) ry++;
+        if (ry == 1500) ry--;
+    int rx = (int)position.rx();
+        if (!rx) rx++;
+        if (rx == 1500) rx--;
+
+    int new_ry = 0;
+    int new_rx = 0;
+
+    for (int i = size/2 * -1; i< size/2 + size%2; i++){
+        int temp_ry = ry + i*5;
+        new_ry = this->getPeriodicInclusionY(temp_ry);
+        position.setY(new_ry);
+        for (int j = size/2 * -1; j< size/2 + size%2; j++){
+          new_rx = this->getPeriodicInclusionX(rx + j*5);
+          position.setX(new_rx);
+
+          if(this->inclusionType == 1){
+               if(this->isInCircle(rx,ry,new_rx,new_ry,size)){
+                   QGraphicsItem *item2 = this->scene->itemAt(position, QTransform());
+                   this->setInclusionColor(this->getIdByAxles(new_rx, new_ry, block_size), item2);
+               }
+           }
+          else if(this->inclusionType == 2){
+                   QGraphicsItem *item2 = this->scene->itemAt(position, QTransform());
+                   this->setInclusionColor(this->getIdByAxles(new_rx, new_ry, block_size), item2);
+          }
+        }
+    }
+}
+
+void Table::addRandomInclusions(){
+    for(int i = 0; i < this->inclusionAmount; i++){
+       int randomId = rand() % (this->size_x*this->size_y);
+       addInlusion(randomId);
+    }
+}
+
+void Table::addInlusion(int grainId){
+    int block_size = this->grains[0]->settings->h;
+
+    int size = this->inclusion_size;
+    QPointF position;
+
+    position.setX(grains[0]->getAxleX(grainId,size_x,grains[0]->settings->h));
+    position.setY(grains[0]->getAxleY(grainId,size_y,grains[0]->settings->h));
+
+    int ry = (int)position.ry();
+        if (!ry) ry++;
+        if (ry == 1500) ry--;
+    int rx = (int)position.rx();
+        if (!rx) rx++;
+        if (rx == 1500) rx--;
+
+    int new_ry = 0;
+    int new_rx = 0;
+
+    for (int i = size/2 * -1; i< size/2 + size%2; i++){
+        int temp_ry = ry + i*5;
+
+        new_ry = this->getPeriodicInclusionY(temp_ry);
+        if (!new_ry) new_ry++;
+        if (new_ry == 1500) new_ry--;
+        position.setY(new_ry);
+        for (int j = size/2 * -1; j< size/2 + size%2; j++){
+          new_rx = this->getPeriodicInclusionX(rx + j*5);
+          if (!new_rx) new_rx++;
+          if (new_rx == 1500) new_rx--;
+          position.setX(new_rx);
+
+          int dupa = this->inclusionType;
+
+          if(this->inclusionType == 1){
+               if(this->isInCircle(rx,ry,new_rx,new_ry,size)){
+                   QGraphicsItem *item2 = this->scene->itemAt(position, QTransform());
+                   this->setInclusionColor(this->getIdByAxles(new_rx, new_ry, block_size), item2);
+               }
+           }
+          else if(this->inclusionType == 2){
+                   QGraphicsItem *item2 = this->scene->itemAt(position, QTransform());
+                   this->setInclusionColor(this->getIdByAxles(new_rx, new_ry, block_size), item2);
+          }
+        }
+    }
+}
+void Table::addGrain(int grainId){
+
+    QPointF position;
+    position.setX(grains[0]->getAxleX(grainId,size_x,grains[0]->settings->h));
+    position.setY(grains[0]->getAxleY(grainId,size_y,grains[0]->settings->h));
+    QGraphicsItem *item = this->scene->itemAt(position, QTransform());
+    setColorById(getIdByAxles(position.rx(), position.ry(), grains[0]->settings->h), item);
+
+}
+
+void Table::addRandomGrains(){
+    for(int i = 0; i < this->grainsAmount; i++){
+       int randomId = rand() % (this->size_x*this->size_y);
+       addGrain(randomId);
+    }
+
+}
+
+
 Table::Table(int size_x, int size_y, QGraphicsScene* scene)
 {
     GraphicsScene* myscene = dynamic_cast<GraphicsScene *>(scene);
     myscene->setTable(this);
+    this->scene = myscene;
 
     this->size_x = size_x;
     this->size_y = size_y;
@@ -188,7 +301,7 @@ Table::Table(QGraphicsScene* scene)
 {
     GraphicsScene* myscene = dynamic_cast<GraphicsScene *>(scene);
     myscene->setTable(this);
-
+    this->scene = myscene;
         std::ifstream readFile;
         std::string line;
         readFile.open("export.txt");
