@@ -13,6 +13,7 @@
 #include <QGraphicsView>
 #include <sstream>
 #include <map>
+#include <math.h>
 
 int Table::getIdByAxles(int ax, int ay, int block_size){
 
@@ -49,6 +50,16 @@ void Table::setColorById(int id, QGraphicsItem *item){
     this->grains[id]->color = random_color;
 }
 
+void Table::setInclusionColor(int id, QGraphicsItem *item){
+
+    QGraphicsRectItem *rect2 = qgraphicsitem_cast<QGraphicsRectItem *>(item);
+
+    int random_color = 9;
+    rect2->setBrush(this->grains[id]->getColor(random_color));
+
+    this->grains[id]->color = random_color;
+}
+
 void Table::randomColor(QGraphicsScene* scene) {
     for (int i = 0; i < this->size_x; i++) {
         if (i % 5 == 0) {
@@ -61,40 +72,76 @@ void Table::randomColor(QGraphicsScene* scene) {
 
 }
 
+int Table::getPeriodicX(int j){
+    if(j > this->size_x-1) return 0;
+    if(j < 0) return this->size_x-1;
+    return j;
+}
+int Table::getPeriodicY(int i){
+    if(i > this->size_y-1) return 0;
+    if(i < 0) return this->size_y-1;
+    return i;
+}
+
+//for inclusion in graphicssene
+int Table::getPeriodicInclusionX(int j){
+
+    int pixel_size = this->size_x*this->grains[0]->settings->h;
+    if(j >= pixel_size) return j-pixel_size;
+    if(j <= 0) return pixel_size+j;
+    return j;
+};
+int Table::getPeriodicInclusionY(int i){
+    int pixel_size = this->size_y*this->grains[0]->settings->h;
+
+    if(i >= pixel_size) return i-pixel_size;
+    if(i <= 0) return pixel_size+i;
+    return i;
+};
+
+bool Table::isInCircle(int rx, int ry, int new_rx, int new_ry,int inclusion_size){
+    int param = pow((new_rx-rx), 2) + pow((new_ry-ry),2);
+    double d = sqrt(param);
+    if(d < (inclusion_size/2)*5) return true;
+    else {
+        return false;
+    }
+
+};
+
 void Table::vonNeumann(){
 
  for (int i = 0; i < 100; i++){
 
-   for (int i=1; i < this->size_y-1; i++){
-           for (int j=1; j < this->size_x-1; j++){
+   for (int i=0; i < this->size_y; i++){
+           for (int j=0; j < this->size_x; j++){
                std::map<int, int> color_count;
 
                //x,y
                int current_id = j + i*this->size_x;
 
                //x-1, y
-               int id = j-1 + i*this->size_x;
+               int id = getPeriodicX(j-1) + i*this->size_x;
 
-               if (grains[id]->color){
+               if (grains[id]->color && grains[id]->color != 9){
                    color_count[grains[id]->color]++;
 
                  }
 
                //x+1, y
-               id = j+1 + i*this->size_x;
-               if (grains[id]->color)
+               id = getPeriodicX(j+1) + i*this->size_x;
+               if (grains[id]->color && grains[id]->color != 9)
                    color_count[grains[id]->color]++;
 
                //x, y+1
-               id = j + (i+1)*this->size_x;
-               if (grains[id]->color)
+               id = j + getPeriodicY(i+1)*this->size_x;
+               if (grains[id]->color && grains[id]->color != 9)
                    color_count[grains[id]->color]++;
 
                //x, y-1
-               id = j + (i-1)*this->size_x;
-               if (grains[id]->color)
+               id = j + getPeriodicY(i-1)*this->size_x;
+               if (grains[id]->color && grains[id]->color != 9)
                    color_count[grains[id]->color]++;
-
 
                int max_value = 0;
                int max_key = 0;
@@ -108,6 +155,10 @@ void Table::vonNeumann(){
 
                if(color_count.size()){
                  grains[current_id]->new_color = max_key;
+               }
+
+               if (grains[current_id]->color == 9){
+                   grains[current_id]->new_color = 9;
                }
 
            }

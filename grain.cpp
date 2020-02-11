@@ -40,15 +40,16 @@ void Grain::draw(QGraphicsScene* scene) {
 
 void Grain::setColors(){
 
-    this->colors.push_back(new Color(0, Qt::black));
+    this->colors.push_back(new Color(0, Qt::gray));
     this->colors.push_back(new Color(1, Qt::yellow));
     this->colors.push_back(new Color(2, Qt::red));
     this->colors.push_back(new Color(3, Qt::cyan));
     this->colors.push_back(new Color(4, Qt::magenta));
-    this->colors.push_back(new Color(5, Qt::gray));
+    this->colors.push_back(new Color(5, Qt::blue));
     this->colors.push_back(new Color(6, Qt::white));
     this->colors.push_back(new Color(7, Qt::darkMagenta));
     this->colors.push_back(new Color(8, Qt::darkGreen));
+    this->colors.push_back(new Color(9, Qt::black));
 
 
 }

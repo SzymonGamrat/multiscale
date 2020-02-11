@@ -37,6 +37,7 @@ void MainWindow::on_pushButton_clicked() //set scene
         //table->exportToFile();
 
         ui->graphicsView->setScene(this->scene);
+        ui->checkBox->setEnabled(true);
 
         //ui->graphicsView->show();
 
@@ -76,4 +77,15 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
 void MainWindow::on_pushButton_4_clicked()
 {
     this->table->vonNeumann();
+}
+
+void MainWindow::on_spinBox_3_valueChanged(int arg1)
+{
+    this->table->inclusion_size = ui->spinBox_3->value();
+
+}
+
+void MainWindow::on_spinBox_valueChanged(const QString &arg1)
+{
+
 }
