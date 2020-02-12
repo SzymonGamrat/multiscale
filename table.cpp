@@ -109,9 +109,9 @@ bool Table::isInCircle(int rx, int ry, int new_rx, int new_ry,int inclusion_size
 
 };
 
-void Table::vonNeumann(Ui::MainWindow *ui){
+int Table::vonNeumann(Ui::MainWindow *ui){
 
- for (int i = 0; i < 100; i++){
+    int step = 0;
 
    for (int i=0; i < this->size_y; i++){
            for (int j=0; j < this->size_x; j++){
@@ -123,24 +123,24 @@ void Table::vonNeumann(Ui::MainWindow *ui){
                //x-1, y
                int id = getPeriodicX(j-1) + i*this->size_x;
 
-               if (grains[id]->color && grains[id]->color != 9){
+               if (grains[id]->color && grains[id]->color != 9 && grains[id]->color != 0){
                    color_count[grains[id]->color]++;
 
                  }
 
                //x+1, y
                id = getPeriodicX(j+1) + i*this->size_x;
-               if (grains[id]->color && grains[id]->color != 9)
+               if (grains[id]->color && grains[id]->color != 9 && grains[id]->color != 0)
                    color_count[grains[id]->color]++;
 
                //x, y+1
                id = j + getPeriodicY(i+1)*this->size_x;
-               if (grains[id]->color && grains[id]->color != 9)
+               if (grains[id]->color && grains[id]->color != 9 && grains[id]->color != 0)
                    color_count[grains[id]->color]++;
 
                //x, y-1
                id = j + getPeriodicY(i-1)*this->size_x;
-               if (grains[id]->color && grains[id]->color != 9)
+               if (grains[id]->color && grains[id]->color != 9 && grains[id]->color != 0)
                    color_count[grains[id]->color]++;
 
                int max_value = 0;
@@ -153,12 +153,29 @@ void Table::vonNeumann(Ui::MainWindow *ui){
                    }
                }
 
+               grains[current_id]->new_color = grains[current_id]->color;
+
                if(color_count.size()){
-                 grains[current_id]->new_color = max_key;
+
+                   if (grains[current_id]->color == 0){
+                       grains[current_id]->new_color = max_key;
+                   }
+                   else if (max_value !=5 && max_value != color_count[grains[current_id]->color]+2){
+                       grains[current_id]->new_color = max_key;
+                   }
+
                }
 
+
+
+               //inclusion excluding
                if (grains[current_id]->color == 9){
                    grains[current_id]->new_color = 9;
+               }
+
+               //growth step
+               if (grains[current_id]->color != grains[current_id]->new_color){
+                   step++;
                }
 
            }
@@ -167,9 +184,323 @@ void Table::vonNeumann(Ui::MainWindow *ui){
        for (int i = 0; i < size_x*size_y; i++){
            grains[i]->updateColor();
        }
-   }
+
+       int something_happen = 0;
+       if (step)
+           something_happen = 1;
+
+       return something_happen;
 }
 
+int Table::moore(Ui::MainWindow *ui){
+    int step = 0;
+    for (int i=0; i < this->size_y; i++){
+            for (int j=0; j < this->size_x; j++){
+                std::map<int, int> color_count;
+
+                //x,y
+                int current_id = j + i*this->size_x;
+
+                //x-1, y
+                int id = getPeriodicX(j-1) + i*this->size_x;
+
+                if (grains[id]->color && grains[id]->color != 9){
+                    color_count[grains[id]->color]++;
+
+                  }
+
+                //x+1, y
+                id = getPeriodicX(j+1) + i*this->size_x;
+                if (grains[id]->color && grains[id]->color != 9)
+                    color_count[grains[id]->color]++;
+
+                //x, y+1
+                id = j + getPeriodicY(i+1)*this->size_x;
+                if (grains[id]->color && grains[id]->color != 9)
+                    color_count[grains[id]->color]++;
+
+                //x, y-1
+                id = j + getPeriodicY(i-1)*this->size_x;
+                if (grains[id]->color && grains[id]->color != 9)
+                    color_count[grains[id]->color]++;
+
+                //x+1, y+1
+                id = getPeriodicX(j+1) + getPeriodicY(i+1)*this->size_x;
+                if (grains[id]->color && grains[id]->color != 9)
+                    color_count[grains[id]->color]++;
+
+                //x-1, y-1
+                id = getPeriodicX(j-1) + getPeriodicY(i-1)*this->size_x;
+                if (grains[id]->color && grains[id]->color != 9)
+                    color_count[grains[id]->color]++;
+
+                //x-1, y+1
+                id = getPeriodicX(j-1) + getPeriodicY(i+1)*this->size_x;
+                if (grains[id]->color && grains[id]->color != 9)
+                    color_count[grains[id]->color]++;
+
+                //x+1, y-1
+                id = getPeriodicX(j+1) + getPeriodicY(i-1)*this->size_x;
+                if (grains[id]->color && grains[id]->color != 9)
+                    color_count[grains[id]->color]++;
+
+
+                int max_value = 0;
+                int max_key = 0;
+                for(std::map<int,int>::iterator it=color_count.begin(); it !=color_count.end(); ++it){
+                    if(it->second > max_value){
+                        max_value = it->second;
+                        max_key = it->first;
+
+                    }
+                }
+
+                grains[current_id]->new_color = grains[current_id]->color;
+
+
+                if(color_count.size()){
+                    if (max_value > color_count[grains[current_id]->color]){
+                         grains[current_id]->new_color = max_key;
+                    }
+                }
+
+                if (grains[current_id]->color == 9){
+                    grains[current_id]->new_color = 9;
+                }
+
+                //growth step
+                if (grains[current_id]->color != grains[current_id]->new_color){
+                    step++;
+                }
+
+            }
+        }
+
+        for (int i = 0; i < size_x*size_y; i++){
+            grains[i]->updateColor();
+        }
+
+        int something_happen = 0;
+        if (step)
+            something_happen = 1;
+
+        return something_happen;
+
+}
+
+int Table::extendedMoore(Ui::MainWindow *ui){
+    int step = 0;
+
+    int rule = 0;
+    int rule2 = 0;
+    int rule3 = 0;
+
+    for (int i=0; i < this->size_y; i++){
+            for (int j=0; j < this->size_x; j++){
+
+                 rule = 0;
+                 rule2 = 0;
+                 rule3 = 0;
+                std::map<int, int> color_count;
+
+                //x,y
+                int current_id = j + i*this->size_x;
+
+                //x-1, y-1
+                int id1 = getPeriodicX(j-1) + getPeriodicY(i-1)*this->size_x;
+                if (grains[id1]->color && grains[id1]->color != 9  )
+                    color_count[grains[id1]->color]++;
+
+                //x, y-1
+                int id2 = j + getPeriodicY(i-1)*this->size_x;
+                if (grains[id2]->color && grains[id2]->color != 9 )
+                    color_count[grains[id2]->color]++;
+
+                //x+1, y-1
+                int id3 = getPeriodicX(j+1) + getPeriodicY(i-1)*this->size_x;
+                if (grains[id3]->color && grains[id3]->color != 9 )
+                    color_count[grains[id3]->color]++;
+
+                //x-1, y
+                int id4 = getPeriodicX(j-1) + i*this->size_x;
+
+                if (grains[id4]->color && grains[id4]->color != 9 ){
+                    color_count[grains[id4]->color]++;
+                }
+
+                //x+1, y
+                int id6 = getPeriodicX(j+1) + i*this->size_x;
+                if (grains[id6]->color && grains[id6]->color != 9 )
+                    color_count[grains[id6]->color]++;
+
+                //x-1, y+1
+                int id7 = getPeriodicX(j-1) + getPeriodicY(i+1)*this->size_x;
+                if (grains[id7]->color && grains[id7]->color != 9)
+                    color_count[grains[id7]->color]++;
+
+
+                //x, y+1
+                int id8 = j + getPeriodicY(i+1)*this->size_x;
+                if (grains[id8]->color && grains[id8]->color != 9 )
+                    color_count[grains[id8]->color]++;
+
+
+
+                //x+1, y+1
+                int id9 = getPeriodicX(j+1) + getPeriodicY(i+1)*this->size_x;
+                if (grains[id9]->color && grains[id9]->color != 9 )
+                    color_count[grains[id9]->color]++;
+
+
+
+                int max_value = 0;
+                int max_key = 0;
+                for(std::map<int,int>::iterator it=color_count.begin(); it !=color_count.end(); ++it){
+                    if(it->second > max_value){
+                        max_value = it->second;
+                        max_key = it->first;
+
+                    }
+                }
+
+                if(color_count.size()){
+
+
+
+                    if (color_count.size() >= 5){
+
+                        if (grains[id1]->color == grains[id2]->color == grains[id3]->color == grains[id6]->color == grains[id9]->color  )
+                        {
+                            grains[current_id]->new_color = max_key;
+                            rule++;
+                        }
+                        if (grains[id2]->color == grains[id3]->color == grains[id6]->color == grains[id9]->color == grains[id8]->color  )
+                        {
+                            grains[current_id]->new_color = max_key;
+                            rule++;
+                        }
+                        if (grains[id3]->color == grains[id6]->color == grains[id9]->color == grains[id8]->color == grains[id7]->color  )
+                        {
+                            grains[current_id]->new_color = max_key;
+                            rule++;
+                        }
+                        if (grains[id6]->color == grains[id9]->color == grains[id8]->color == grains[id7]->color == grains[id4]->color )
+                        {
+                            grains[current_id]->new_color = max_key;
+                            rule++;
+                        }
+                        if (grains[id9]->color == grains[id8]->color == grains[id7]->color == grains[id4]->color == grains[id1]->color )
+                        {
+                            grains[current_id]->new_color = max_key;
+                            rule++;
+                        }
+                        if (grains[id8]->color == grains[id7]->color == grains[id4]->color == grains[id1]->color == grains[id2]->color )
+                        {
+                            grains[current_id]->new_color = max_key;
+                            rule++;
+                        }
+                        if (grains[id7]->color == grains[id4]->color == grains[id1]->color == grains[id2]->color == grains[id3]->color )
+                        {
+                            grains[current_id]->new_color = max_key;
+                            rule++;
+                        }
+                        if (grains[id4]->color == grains[id1]->color == grains[id2]->color == grains[id3]->color == grains[id6]->color )
+                        {
+                            grains[current_id]->new_color = max_key;
+                            rule++;
+                        }
+                    }
+
+                    if (!rule){
+                        if (grains[id2]->color == grains[id6]->color == grains[id8]->color)
+                        {
+                            grains[current_id]->new_color = max_key;
+                            rule2++;
+                        }
+                        if (grains[id6]->color == grains[id8]->color == grains[id4]->color)
+                        {
+                            grains[current_id]->new_color = max_key;
+                            rule2++;
+                        }
+                        if (grains[id8]->color == grains[id4]->color == grains[id2]->color)
+                        {
+                            grains[current_id]->new_color = max_key;
+                            rule2++;
+                        }
+                        if (grains[id4]->color == grains[id2]->color == grains[id6]->color)
+                        {
+                            grains[current_id]->new_color = max_key;
+                            rule2++;
+                        }
+
+                    }
+
+                    if (!rule2 && color_count.size() == 3){
+                        if (grains[id1]->color == grains[id3]->color == grains[id9]->color)
+                        {
+                            grains[current_id]->new_color = max_key;
+                            rule3++;
+                        }
+                        if (grains[id3]->color == grains[id9]->color == grains[id7]->color)
+                        {
+                            grains[current_id]->new_color = max_key;
+                            rule3++;
+                        }
+                        if (grains[id9]->color == grains[id7]->color == grains[id1]->color)
+                        {
+                            grains[current_id]->new_color = max_key;
+                            rule3++;
+                        }
+                        if (grains[id7]->color == grains[id1]->color == grains[id3]->color)
+                        {
+                            grains[current_id]->new_color = max_key;
+                            rule3++;
+                        }
+                    }
+
+                    if (!rule3){
+                        srand (time(NULL));
+                        int probability = rand() % 100;
+                        if (probability < this->probabilityThreshold){
+                            grains[current_id]->new_color = max_key;
+                        }
+
+
+                    }
+
+                    //if (color_count.size() < 5 && color_count.size() > 2 ){
+
+                   // }
+
+
+                    //if (max_value > color_count[grains[current_id]->color]){
+                    //     grains[current_id]->new_color = max_key;
+                    //}
+                }
+
+                if (grains[current_id]->color == 9){
+                    grains[current_id]->new_color = 9;
+                }
+
+                //growth step
+                if (grains[current_id]->color != grains[current_id]->new_color){
+                    step++;
+                }
+
+            }
+        }
+
+        for (int i = 0; i < size_x*size_y; i++){
+            grains[i]->updateColor();
+        }
+
+        int something_happen = 0;
+        if (step)
+            something_happen = 1;
+
+        return something_happen;
+
+}
 
 void Table::addInlusion(QPointF position){
     int block_size = this->grains[0]->settings->h;
@@ -209,11 +540,25 @@ void Table::addInlusion(QPointF position){
     }
 }
 
-void Table::addRandomInclusions(){
-    for(int i = 0; i < this->inclusionAmount; i++){
-       int randomId = rand() % (this->size_x*this->size_y);
-       addInlusion(randomId);
-    }
+void Table::addRandomInclusions(int inclusionAdditionState){
+    //for(int i = 0; i < this->inclusionAmount; i++){
+     int i=0;
+     while (i<this->inclusionAmount){
+               if(inclusionAdditionState == 1){
+                    int randomId = rand() % (this->size_x*this->size_y);
+                    addInlusion(randomId);
+                    i++;
+               }
+
+               if(inclusionAdditionState == 2){
+                   int randomId = rand() % (this->size_x*this->size_y);
+                   if(isOnGrainBorder(randomId)){
+                        addInlusion(randomId);
+                        i++;
+                    }
+                }
+       }
+    //}
 }
 
 void Table::addInlusion(int grainId){
@@ -248,8 +593,6 @@ void Table::addInlusion(int grainId){
           if (new_rx == 1500) new_rx--;
           position.setX(new_rx);
 
-          int dupa = this->inclusionType;
-
           if(this->inclusionType == 1){
                if(this->isInCircle(rx,ry,new_rx,new_ry,size)){
                    QGraphicsItem *item2 = this->scene->itemAt(position, QTransform());
@@ -263,6 +606,90 @@ void Table::addInlusion(int grainId){
         }
     }
 }
+
+bool Table::isOnGrainBorder(int _id){
+
+    int color_count = 0;
+
+    //x,y
+    int current_id = _id;
+    int i = grains[0]->getY(current_id, this->size_y);
+    int j = grains[0]->getX(current_id, this->size_x);
+
+
+
+    //x-1, y
+    int id = getPeriodicX(j-1) + i*this->size_x;
+    if (grains[id]->color && grains[id]->color != 9){
+        if(grains[id]->color != grains[current_id]->color){
+            color_count++;
+        }
+      }
+
+    //x+1, y
+    id = getPeriodicX(j+1) + i*this->size_x;
+    if (grains[id]->color && grains[id]->color != 9){
+        if(grains[id]->color != grains[current_id]->color){
+            color_count++;
+        }
+      }
+
+    //x, y+1
+    id = j + getPeriodicY(i+1)*this->size_x;
+    if (grains[id]->color && grains[id]->color != 9){
+        if(grains[id]->color != grains[current_id]->color){
+            color_count++;
+        }
+      }
+
+    //x, y-1
+    id = j + getPeriodicY(i-1)*this->size_x;
+    if (grains[id]->color && grains[id]->color != 9){
+        if(grains[id]->color != grains[current_id]->color){
+            color_count++;
+        }
+      }
+
+    //x+1, y+1
+    id = getPeriodicX(j+1) + getPeriodicY(i+1)*this->size_x;
+    if (grains[id]->color && grains[id]->color != 9){
+        if(grains[id]->color != grains[current_id]->color){
+            color_count++;
+        }
+      }
+
+    //x-1, y-1
+    id = getPeriodicX(j-1) + getPeriodicY(i-1)*this->size_x;
+    if (grains[id]->color && grains[id]->color != 9){
+        if(grains[id]->color != grains[current_id]->color){
+            color_count++;
+        }
+      }
+
+    //x-1, y+1
+    id = getPeriodicX(j-1) + getPeriodicY(i+1)*this->size_x;
+    if (grains[id]->color && grains[id]->color != 9){
+        if(grains[id]->color != grains[current_id]->color){
+            color_count++;
+        }
+      }
+    //x+1, y-1
+    id = getPeriodicX(j+1) + getPeriodicY(i-1)*this->size_x;
+    if (grains[id]->color && grains[id]->color != 9){
+        if(grains[id]->color != grains[current_id]->color){
+            color_count++;
+        }
+      }
+
+
+if (color_count)
+    return true;
+
+return false;
+
+}
+
+
 void Table::addGrain(int grainId){
 
     QPointF position;
@@ -270,6 +697,7 @@ void Table::addGrain(int grainId){
     position.setY(grains[0]->getAxleY(grainId,size_y,grains[0]->settings->h));
     QGraphicsItem *item = this->scene->itemAt(position, QTransform());
     setColorById(getIdByAxles(position.rx(), position.ry(), grains[0]->settings->h), item);
+    this->steps++;
 
 }
 

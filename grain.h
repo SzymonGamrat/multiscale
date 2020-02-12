@@ -31,6 +31,8 @@ public:
 
     int getAxleX(int id, int _table_x, int block_size);
     int getAxleY(int id, int _table_y, int block_size);
+    int getX(int id, int _table_x);
+    int getY(int id, int _table_y);
     void draw(QGraphicsScene* scene);
     void setColors();
 

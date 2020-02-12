@@ -28,6 +28,21 @@ int Grain::getAxleY(int id, int _table_y, int block_size) {
 
 }
 
+int Grain::getX(int id, int _table_x) {
+    int return_ax = 0;
+    return_ax = (id % _table_x);
+    return return_ax;
+
+}
+
+int Grain::getY(int id, int _table_y) {
+    int return_ay = 0;
+    return_ay = ((id / _table_y));
+    return return_ay;
+
+}
+
+
 
 void Grain::draw(QGraphicsScene* scene) {
 
@@ -91,7 +106,7 @@ void Grain::setColor(int color_id){
 void Grain::updateColor(){
     this->color = this->new_color;
     rect->setBrush(this->getColor(this->color));
-    this->scene->update();
+    //this->scene->update();
 }
 
 

@@ -10,6 +10,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <random>
 #include <iterator>
+#include <QThread>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -76,17 +77,19 @@ void MainWindow::on_Inclusion_stateChanged(int arg1)
 
 void MainWindow::on_pushButton_4_clicked()
 {
-    if(this->table->inclusionAdditionState == 1){
-        this->table->addRandomInclusions();
-    }
 
-    //radio moore von neumann
-    this->table->vonNeumann(ui);
+            if(this->table->grainGrowyhMEtodType ==1){
+                this->table->steps += this->table->vonNeumann(ui);
+            }
 
+            if(this->table->grainGrowyhMEtodType ==2){
+                this->table->steps += this->table->moore(ui);
+            }
 
-    if(this->table->inclusionAdditionState == 2){
-        this->table->addRandomInclusions();
-    }
+            if(this->table->grainGrowyhMEtodType ==3){
+                this->table->steps += this->table->extendedMoore(ui);
+            }
+
 }
 
 void MainWindow::on_InclusionSize_valueChanged(int arg1)
@@ -120,12 +123,12 @@ void MainWindow::on_spinBox_valueChanged(int arg1)
 
 void MainWindow::on_pushButton_clicked()
 {
-    this->table->addRandomInclusions();
+    this->table->addRandomInclusions(this->table->inclusionAdditionState);
 }
 
 void MainWindow::on_spinBox_2_valueChanged(int arg1)
 {
-    this->table->inclusionAmount = ui->spinBox_2->value();
+    this->table->grainsAmount = ui->spinBox_2->value();
 }
 
 void MainWindow::on_pushButton_2_clicked()
@@ -141,4 +144,53 @@ void MainWindow::on_radioButton_3_toggled(bool checked)
 void MainWindow::on_radioButton_4_toggled(bool checked)
 {
     if(checked) this->table->inclusionAdditionState = 2;
+}
+
+
+//von neumann
+void MainWindow::on_radioButton_toggled(bool checked)
+{
+    if(checked) this->table->grainGrowyhMEtodType = 1;
+}
+
+//moore
+
+void MainWindow::on_radioButton_2_toggled(bool checked)
+{
+    if(checked) this->table->grainGrowyhMEtodType = 2;
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    int previous_step = this->table->steps;
+
+    if(this->table->inclusionAdditionState == 1){
+        this->table->addRandomInclusions(1);
+    }
+
+        while(true){
+            emit ui->pushButton_4->clicked();
+            emit scene->update();
+
+            if (this->table->steps == previous_step){
+                   break;
+            } else {
+              previous_step = this->table->steps;
+            }
+       }
+
+    if(this->table->inclusionAdditionState == 2){
+        this->table->addRandomInclusions(2);
+    }
+
+}
+
+void MainWindow::on_spinBox_3_valueChanged(int arg1)
+{
+    this->table->probabilityThreshold = ui->spinBox_3->value();
+}
+
+void MainWindow::on_radioButton_5_toggled(bool checked)
+{
+    if(checked) this->table->grainGrowyhMEtodType = 3;
 }

@@ -6,6 +6,11 @@
 #include <table.h>
 #include "graphicsscene.h"
 
+GraphicsScene::GraphicsScene(QObject *parent) :
+    QGraphicsScene(parent)
+{
+}
+
 void GraphicsScene::setTable(Table *_table){
 
     this->table = _table;

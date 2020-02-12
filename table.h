@@ -23,6 +23,10 @@ public:
     int inclusionType = 0;
     int inclusionAmount = 0;
     int inclusionAdditionState = 0;
+    int grainGrowyhMEtodType = 0;
+    int probabilityThreshold = 0;
+
+    int steps = 0;
     /*int rx =0;
     int ry =0;
     int new_rx = 0;
@@ -39,13 +43,14 @@ public:
     void setColorById(int id, QGraphicsItem *item);
     void setInclusionColor(int id, QGraphicsItem *item);
     void addInlusion(QPointF position);
-    void addRandomInclusions();
+    void addRandomInclusions(int inclusionAdditionState);
     void addInlusion(int grainId);
     void addRandomGrains();
     void addGrain(int grainId);
-    void vonNeumann(Ui::MainWindow *ui);
-
-
+    int vonNeumann(Ui::MainWindow *ui);
+    int moore(Ui::MainWindow *ui);
+    int extendedMoore(Ui::MainWindow *ui);
+    bool isOnGrainBorder(int id);
 
     Table(int size_x, int size_y, QGraphicsScene* scene);
     Table(QGraphicsScene* scene);
