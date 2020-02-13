@@ -39,6 +39,7 @@ void MainWindow::on_SetScene_clicked() //set scene
         table->grainsAmount = ui->spinBox_2->value();
         ui->graphicsView->setScene(this->scene);
         ui->frame->setEnabled(true);
+        ui->frame_4->setEnabled(true);
         ui->Inclusion->setEnabled(true);
         ui->export_2->setEnabled(true);
         //ui->graphicsView->show();
