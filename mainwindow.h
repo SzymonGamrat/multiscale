@@ -73,6 +73,10 @@ private slots:
 
     void on_radioButton_5_toggled(bool checked);
 
+    void on_pushButton_5_clicked();
+
+    void on_pushButton_6_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

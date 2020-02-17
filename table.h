@@ -51,6 +51,10 @@ public:
     int moore(Ui::MainWindow *ui);
     int extendedMoore(Ui::MainWindow *ui);
     bool isOnGrainBorder(int id);
+    void markBorders();
+    bool neighborBorder(int _id);
+    void clearColors();
+    int countBorderGrains();
 
     Table(int size_x, int size_y, QGraphicsScene* scene);
     Table(QGraphicsScene* scene);

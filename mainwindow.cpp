@@ -195,3 +195,16 @@ void MainWindow::on_radioButton_5_toggled(bool checked)
 {
     if(checked) this->table->grainGrowyhMEtodType = 3;
 }
+
+void MainWindow::on_pushButton_5_clicked()
+{
+    this->table->markBorders();
+}
+
+void MainWindow::on_pushButton_6_clicked()
+{
+    this->table->clearColors();
+    int amount = this->table->size_x*this->table->size_y;
+    int border_count = this->table->countBorderGrains();
+    ui->label_8->setNum((border_count*100)/amount);
+}

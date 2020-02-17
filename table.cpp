@@ -709,6 +709,79 @@ void Table::addRandomGrains(){
 
 }
 
+bool Table::neighborBorder(int _id){
+
+    int color_count = 0;
+
+    //x,y
+    int current_id = _id;
+    int i = grains[0]->getY(current_id, this->size_y);
+    int j = grains[0]->getX(current_id, this->size_x);
+
+    //x-1, y
+
+    //poprzednik
+    int id = getPeriodicX(j-1) + i*this->size_x;
+
+    //poprzednik po skosie
+    int id2 = getPeriodicX(j-1) + getPeriodicY(i-1)*this->size_x;
+
+    //poprzednik -1
+    int id3 = getPeriodicX(j+1) + i*this->size_x;
+
+    if (
+          // (grains[id]->color == 9 && grains[id2]->color == 9) ||
+            //(grains[id]->color == 9 && grains[id3]->color == 9)
+            grains[id]->color == 9 && grains[id2]->color == 9 && isOnGrainBorder(id3) == false
+       )
+      {
+            color_count++;
+      }
+
+    if (color_count)
+        return true;
+
+    return false;
+}
+
+void Table::markBorders(){
+
+    for (int i=0; i < this->size_y*this->size_x; i++){
+
+                    if(this->isOnGrainBorder(i)){
+                        if(!this->neighborBorder(i) ){
+                            grains[i]->setColor(9);
+                        }
+                    }
+
+    }
+
+}
+
+void Table::clearColors(){
+
+    for (int i=0; i < this->size_y*this->size_x; i++){
+
+                if(this->grains[i]->color != 9){
+                    this->grains[i]->setColor(6);
+                }
+
+    }
+
+}
+
+int Table::countBorderGrains(){
+    int color_count = 0;
+    for (int i=0; i < this->size_y*this->size_x; i++){
+        if(grains[i]->color == 9)
+        {
+            color_count++;
+        }
+    }
+
+    return color_count;
+}
+
 
 Table::Table(int size_x, int size_y, QGraphicsScene* scene)
 {
